@@ -1,19 +1,4 @@
-import pytest
 from werkzeug.wrappers import Response
-
-from retryable_requests.session import RetryableSession
-
-LISTEN_PORT = 6749
-
-
-@pytest.fixture(scope='session')
-def httpserver_listen_address():
-    return 'localhost', LISTEN_PORT
-
-
-@pytest.fixture
-def base_url(httpserver_listen_address):
-    return f'http://{httpserver_listen_address[0]}:{httpserver_listen_address[1]}'
 
 
 def fails_first_time(request):
@@ -27,8 +12,13 @@ def fails_first_time(request):
 fails_first_time.responded = False  # type: ignore
 
 
-def test_session_retries_bad_status_codes(httpserver, base_url):
+def test_base_url_session_retries_bad_status_codes(httpserver, base_url_session):
     httpserver.expect_request('/', method='GET').respond_with_handler(fails_first_time)
-    session = RetryableSession(base_url)
-    r = session.get('/')
+    r = base_url_session.get('/')
+    assert r.ok, r.text
+
+
+def test_session_retries_bad_status_codes(httpserver, base_url, session):
+    httpserver.expect_request('/', method='GET').respond_with_handler(fails_first_time)
+    r = session.get(f'{base_url}/')
     assert r.ok, r.text

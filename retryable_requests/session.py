@@ -1,9 +1,10 @@
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from requests.sessions import Session
 from requests_toolbelt.sessions import BaseUrlSession
 
 
-class RetryableSession(BaseUrlSession):
+class RetryableMixin:
     def __init__(self, *args, **kwargs):
         kwargs.setdefault(
             'retry_strategy',
@@ -24,3 +25,11 @@ class RetryableSession(BaseUrlSession):
     def request(self, *args, **kwargs):
         kwargs.setdefault('timeout', (5, 5))
         return super().request(*args, **kwargs)
+
+
+class RetryableBaseUrlSession(RetryableMixin, BaseUrlSession):
+    pass
+
+
+class RetryableSession(RetryableMixin, Session):
+    pass
