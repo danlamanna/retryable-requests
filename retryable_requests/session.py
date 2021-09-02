@@ -22,7 +22,8 @@ class RetryableMixin:
         self.mount('https://', adapter)
 
     def request(self, *args, **kwargs):
-        kwargs.setdefault('timeout', (5, 5))
+        # See https://docs.python-requests.org/en/master/user/advanced/#timeouts
+        kwargs.setdefault('timeout', (3.05, 5))
         return super().request(*args, **kwargs)
 
 
