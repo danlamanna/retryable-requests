@@ -16,10 +16,10 @@ def base_url(httpserver_listen_address):
 
 
 @pytest.fixture
-def base_url_session(httpserver, base_url):
+def base_url_session(base_url):
     return RetryableBaseUrlSession(base_url)
 
 
 @pytest.fixture
-def session(httpserver):
+def session():
     return RetryableSession()
