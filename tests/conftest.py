@@ -1,6 +1,6 @@
 import pytest
 
-from retryable_requests.session import RetryableBaseUrlSession, RetryableSession
+from retryable_requests import RetryableBaseUrlSession, RetryableSession
 
 LISTEN_PORT = 6749
 

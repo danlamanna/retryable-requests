@@ -15,7 +15,7 @@ session.get('https://httpbin.org/get')  # will be retried up to 5 times
 ```
 
 
-### Complex, only retry on 429 errors
+### Only retry on 429 errors
 
 ``` python
 from requests.packages.urllib3.util.retry import Retry
@@ -27,7 +27,7 @@ retry_strategy = Retry(
     backoff_factor=0.1,
 )
 
-session = RetryableSession(retry_strategy)
+session = RetryableSession(retry_strategy=retry_strategy)
 session.get('https://httpbin.org/get')  # will be retried up to 5 times, only for 429 errors
 ```
 
