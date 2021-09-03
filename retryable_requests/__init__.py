@@ -6,4 +6,6 @@ except PackageNotFoundError:
     # package is not installed
     pass
 
-from .session import RetryableBaseUrlSession, RetryableSession  # noqa: F401
+from .session import RetryableBaseUrlSession, RetryableSession
+
+__all__ = ['RetryableBaseUrlSession', 'RetryableSession']
