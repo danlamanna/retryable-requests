@@ -34,9 +34,9 @@ session.get('https://httpbin.org/get')  # will be retried up to 5 times, only fo
 ### Automatically use a base URL for every request
 
 ``` python
-from retryable_requests import RetryableBaseUrlSession
+from retryable_requests import RetryableSession
 
-session = RetryableBaseUrlSession('https://httpbin.org/')
+session = RetryableSession('https://httpbin.org/')
 session.get('get')  # 'https://httpbin.org/get' will be retried up to 5 times
 session.post('post')  # 'https://httpbin.org/post' won't be retried (POST request)
 ```
@@ -45,7 +45,6 @@ session.post('post')  # 'https://httpbin.org/post' won't be retried (POST reques
 
 - Automatic backing off retries for failed requests that can be safely retried
 - Quick timeouts for non-responsive requests
-- BaseUrl compatible version of a `RetryableSession`
 
 ## See also
 

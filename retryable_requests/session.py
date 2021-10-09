@@ -1,6 +1,5 @@
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from requests.sessions import Session
 from requests_toolbelt.sessions import BaseUrlSession
 
 DEFAULT_RETRY_STRATEGY = Retry(
@@ -27,9 +26,5 @@ class RetryableMixin:
         return super().request(*args, **kwargs)
 
 
-class RetryableBaseUrlSession(RetryableMixin, BaseUrlSession):
-    pass
-
-
-class RetryableSession(RetryableMixin, Session):
+class RetryableSession(RetryableMixin, BaseUrlSession):
     pass
