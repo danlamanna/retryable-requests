@@ -29,10 +29,11 @@ def test_session_retries_bad_status_codes(httpserver, base_url, session):
     assert r.ok, r.text
 
 
-def test_session_retries_connection_errors(session, mocker):
+@pytest.mark.parametrize('protocol', ['http', 'https'])
+def test_session_retries_connection_errors(session, mocker, protocol):
     spy = mocker.spy(HTTPConnectionPool, 'urlopen')
     with pytest.raises(ConnectionError):
-        session.get('http://some-bad-connection.dev')
+        session.get(f'{protocol}://some-bad-connection.dev')
 
     # the initial request + the number of total retries
     assert spy.call_count == 1 + DEFAULT_RETRY_STRATEGY.total
