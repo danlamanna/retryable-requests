@@ -6,6 +6,6 @@ except PackageNotFoundError:
     # package is not installed
     pass
 
-from .session import RetryableBaseUrlSession, RetryableSession
+from .session import RetryableSession
 
-__all__ = ['RetryableBaseUrlSession', 'RetryableSession']
+__all__ = ['RetryableSession']

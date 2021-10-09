@@ -1,6 +1,6 @@
 import pytest
 
-from retryable_requests import RetryableBaseUrlSession, RetryableSession
+from retryable_requests import RetryableSession
 
 LISTEN_PORT = 6749
 
@@ -17,7 +17,7 @@ def base_url(httpserver_listen_address):
 
 @pytest.fixture
 def base_url_session(base_url):
-    return RetryableBaseUrlSession(base_url)
+    return RetryableSession(base_url)
 
 
 @pytest.fixture
