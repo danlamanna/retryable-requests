@@ -1,31 +1,35 @@
+from itertools import chain, repeat
+
 import pytest
 from requests.exceptions import ConnectionError
 from urllib3.connectionpool import HTTPConnectionPool
 from werkzeug.wrappers import Response
 
-from retryable_requests.session import DEFAULT_RETRY_STRATEGY
+from retryable_requests.session import DEFAULT_RETRY_STRATEGY, RetryableSession
 
 
-def fails_first_time(request):
-    if fails_first_time.responded:
-        return Response({}, 200)
-    else:
-        fails_first_time.responded = True
-        return Response({}, 500)
+@pytest.fixture
+def fails_first_time(mocker):
+    return mocker.Mock(
+        side_effect=chain(
+            [Response({}, 500)],
+            repeat(Response({}, 200)),
+        )
+    )
 
 
-fails_first_time.responded = False  # type: ignore
-
-
-def test_base_url_session_retries_bad_status_codes(httpserver, base_url_session):
-    httpserver.expect_request('/', method='GET').respond_with_handler(fails_first_time)
-    r = base_url_session.get('/')
+def test_session_retries_bad_status_codes(httpserver, session, fails_first_time):
+    httpserver.expect_request('/').respond_with_handler(fails_first_time)
+    r = session.get(httpserver.url_for('/'))
     assert r.ok, r.text
 
 
-def test_session_retries_bad_status_codes(httpserver, base_url, session):
-    httpserver.expect_request('/', method='GET').respond_with_handler(fails_first_time)
-    r = session.get(f'{base_url}/')
+def test_session_base_url_retries_bad_status_codes(httpserver, fails_first_time):
+    httpserver.expect_request('/base/stem').respond_with_handler(fails_first_time)
+    session = RetryableSession(base_url=httpserver.url_for('/base/'))
+
+    r = session.get('stem')
+
     assert r.ok, r.text
 
 
@@ -33,7 +37,7 @@ def test_session_retries_bad_status_codes(httpserver, base_url, session):
 def test_session_retries_connection_errors(session, mocker, protocol):
     spy = mocker.spy(HTTPConnectionPool, 'urlopen')
     with pytest.raises(ConnectionError):
-        session.get(f'{protocol}://some-bad-connection.dev')
+        session.get(f'{protocol}://some-bad-connection.invalid')
 
     # the initial request + the number of total retries
     assert spy.call_count == 1 + DEFAULT_RETRY_STRATEGY.total
