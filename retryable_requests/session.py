@@ -11,7 +11,7 @@ DEFAULT_RETRY_STRATEGY = Retry(
 )
 
 
-class RetryableMixin:
+class RetryableSession(BaseUrlSession):
     def __init__(self, base_url: Optional[str] = None, retry_strategy: Optional[Retry] = None):
         if retry_strategy is None:
             retry_strategy = DEFAULT_RETRY_STRATEGY
@@ -26,7 +26,3 @@ class RetryableMixin:
         # See https://docs.python-requests.org/en/master/user/advanced/#timeouts
         kwargs.setdefault('timeout', (3.05, 5))
         return super().request(*args, **kwargs)
-
-
-class RetryableSession(BaseUrlSession):
-    pass
