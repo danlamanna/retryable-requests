@@ -24,9 +24,9 @@ def test_base_url_session_retries_bad_status_codes(httpserver, base_url_session,
     assert r.ok, r.text
 
 
-def test_session_retries_bad_status_codes(httpserver, base_url, session, fails_first_time):
+def test_session_retries_bad_status_codes(httpserver, session, fails_first_time):
     httpserver.expect_request('/').respond_with_handler(fails_first_time)
-    r = session.get(f'{base_url}/')
+    r = session.get(httpserver.url_for('/'))
     assert r.ok, r.text
 
 
