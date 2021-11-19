@@ -46,3 +46,17 @@ def test_session_retries_connection_errors(mocker, protocol):
 
     # the initial request + the number of total retries
     assert spy.call_count == 1 + DEFAULT_RETRY_STRATEGY.total
+
+
+@pytest.mark.parametrize('allow_redirects', [True, False])
+def test_session_redirects(httpserver, allow_redirects):
+    """Ensure that redirect handling with Requests is still respected."""
+    httpserver.expect_request('/start').respond_with_data(
+        status=303, headers={'Location': httpserver.url_for('/end')}
+    )
+    httpserver.expect_request('/end').respond_with_data()
+
+    with RetryableSession() as session:
+        r = session.get(httpserver.url_for('/start'), allow_redirects=allow_redirects)
+
+    assert (r.status_code == 200) == allow_redirects

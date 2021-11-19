@@ -9,6 +9,8 @@ DEFAULT_RETRY_STRATEGY = Retry(
     total=5,
     status_forcelist=[429, 500, 502, 503, 504],
     backoff_factor=0.1,
+    # Let Requests be responsible for all redirection
+    redirect=False,
 )
 
 
