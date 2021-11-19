@@ -19,13 +19,13 @@ def fails_first_time(mocker):
 
 
 def test_base_url_session_retries_bad_status_codes(httpserver, base_url_session, fails_first_time):
-    httpserver.expect_request('/', method='GET').respond_with_handler(fails_first_time)
+    httpserver.expect_request('/').respond_with_handler(fails_first_time)
     r = base_url_session.get('/')
     assert r.ok, r.text
 
 
 def test_session_retries_bad_status_codes(httpserver, base_url, session, fails_first_time):
-    httpserver.expect_request('/', method='GET').respond_with_handler(fails_first_time)
+    httpserver.expect_request('/').respond_with_handler(fails_first_time)
     r = session.get(f'{base_url}/')
     assert r.ok, r.text
 
