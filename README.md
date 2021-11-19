@@ -10,8 +10,8 @@ Easy to use retryable requests sessions.
 ``` python
 from retryable_requests import RetryableSession
 
-session = RetryableSession()
-session.get('https://httpbin.org/get')  # will be retried up to 5 times
+with RetryableSession() as session:
+    session.get('https://httpbin.org/get')  # will be retried up to 5 times
 ```
 
 
@@ -27,8 +27,8 @@ retry_strategy = Retry(
     backoff_factor=0.1,
 )
 
-session = RetryableSession(retry_strategy=retry_strategy)
-session.get('https://httpbin.org/get')  # will be retried up to 5 times, only for 429 errors
+with RetryableSession(retry_strategy=retry_strategy) as session:
+    session.get('https://httpbin.org/get')  # will be retried up to 5 times, only for 429 errors
 ```
 
 ### Automatically use a base URL for every request
@@ -36,9 +36,9 @@ session.get('https://httpbin.org/get')  # will be retried up to 5 times, only fo
 ``` python
 from retryable_requests import RetryableSession
 
-session = RetryableSession('https://httpbin.org/')
-session.get('get')  # 'https://httpbin.org/get' will be retried up to 5 times
-session.post('post')  # 'https://httpbin.org/post' won't be retried (POST request)
+with RetryableSession('https://httpbin.org/') as session:
+    session.get('get')  # 'https://httpbin.org/get' will be retried up to 5 times
+    session.post('post')  # 'https://httpbin.org/post' won't be retried (POST request)
 ```
 
 ## Features
