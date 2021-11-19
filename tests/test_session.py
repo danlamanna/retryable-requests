@@ -37,7 +37,7 @@ def test_session_base_url_retries_bad_status_codes(httpserver, fails_first_time)
 def test_session_retries_connection_errors(session, mocker, protocol):
     spy = mocker.spy(HTTPConnectionPool, 'urlopen')
     with pytest.raises(ConnectionError):
-        session.get(f'{protocol}://some-bad-connection.dev')
+        session.get(f'{protocol}://some-bad-connection.invalid')
 
     # the initial request + the number of total retries
     assert spy.call_count == 1 + DEFAULT_RETRY_STRATEGY.total
