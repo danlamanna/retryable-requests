@@ -1,3 +1,5 @@
+from typing import Optional
+
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from requests_toolbelt.sessions import BaseUrlSession
@@ -9,14 +11,14 @@ DEFAULT_RETRY_STRATEGY = Retry(
 )
 
 
-class RetryableMixin:
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('retry_strategy', DEFAULT_RETRY_STRATEGY)
+class RetryableSession(BaseUrlSession):
+    def __init__(self, base_url: Optional[str] = None, retry_strategy: Optional[Retry] = None):
+        if retry_strategy is None:
+            retry_strategy = DEFAULT_RETRY_STRATEGY
 
-        adapter = HTTPAdapter(max_retries=kwargs['retry_strategy'])
-        kwargs.pop('retry_strategy')
-        super().__init__(*args, **kwargs)
+        super().__init__(base_url=base_url)
 
+        adapter = HTTPAdapter(max_retries=retry_strategy)
         self.mount('http://', adapter)
         self.mount('https://', adapter)
 
@@ -24,7 +26,3 @@ class RetryableMixin:
         # See https://docs.python-requests.org/en/master/user/advanced/#timeouts
         kwargs.setdefault('timeout', (3.05, 5))
         return super().request(*args, **kwargs)
-
-
-class RetryableSession(RetryableMixin, BaseUrlSession):
-    pass
