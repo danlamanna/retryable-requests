@@ -11,6 +11,10 @@ DEFAULT_RETRY_STRATEGY = Retry(
     backoff_factor=0.1,
     # Let Requests be responsible for all redirection
     redirect=False,
+    # Behave like normal usage of Requests and transparently return a failing response,
+    # instead of raising a MaxRetryError. Otherwise, callers have to handle multiple failure
+    # pathways, depending on whether a retry occurred prior to failure.
+    raise_on_status=False,
 )
 
 

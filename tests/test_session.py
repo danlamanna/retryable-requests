@@ -48,6 +48,16 @@ def test_session_retries_connection_errors(mocker, protocol):
     assert spy.call_count == 1 + DEFAULT_RETRY_STRATEGY.total
 
 
+def test_session_failing_termination(httpserver):
+    """Ensure that failing retries eventually terminate."""
+    httpserver.expect_request('/').respond_with_data(status=500)
+
+    with RetryableSession() as session:
+        r = session.get(httpserver.url_for('/'))
+
+    assert r.status_code == 500
+
+
 @pytest.mark.parametrize('allow_redirects', [True, False])
 def test_session_redirects(httpserver, allow_redirects):
     """Ensure that redirect handling with Requests is still respected."""
