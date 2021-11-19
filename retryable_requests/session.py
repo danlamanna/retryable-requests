@@ -1,5 +1,6 @@
 from typing import Optional
 
+from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from requests_toolbelt.sessions import BaseUrlSession
@@ -22,7 +23,7 @@ class RetryableSession(BaseUrlSession):
         self.mount('http://', adapter)
         self.mount('https://', adapter)
 
-    def request(self, *args, **kwargs):
+    def request(self, *args, **kwargs) -> Response:
         # See https://docs.python-requests.org/en/master/user/advanced/#timeouts
         kwargs.setdefault('timeout', (3.05, 5))
         return super().request(*args, **kwargs)
