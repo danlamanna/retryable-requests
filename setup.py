@@ -34,4 +34,6 @@ setup(
     python_requires='>=3.8',
     install_requires=['requests', 'requests-toolbelt'],
     packages=find_packages(),
+    # Package data is required for the py.typed file
+    include_package_data=True,
 )
